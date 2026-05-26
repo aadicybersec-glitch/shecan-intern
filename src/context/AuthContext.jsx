@@ -53,11 +53,11 @@ export default function AuthProvider({ children }) {
       console.warn("Express backend authentication offline or credentials mismatch. Activating recruiter demo database fallback.", err);
       
       // Senior-level Recruiter Fallback Guard!
-      if (email === "admin@shecan.org" && password === "DemoAccess@2026") {
+      if ((email === "admin@shecan.org" || email === "demo@shecan.foundation") && password === "DemoAccess@2026") {
         const mockToken = `demo_session_${Date.now()}`;
         localStorage.setItem("shecan_admin_token", mockToken);
         setIsAuthenticated(true);
-        setUser({ email: "admin@shecan.org", role: "SuperAdmin", mode: "Demo" });
+        setUser({ email, role: "SuperAdmin", mode: "Demo" });
         setLoading(false);
         return { success: true, mode: "demo" };
       }

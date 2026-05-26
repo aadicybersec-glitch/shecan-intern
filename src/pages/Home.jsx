@@ -10,6 +10,7 @@ import StatCard from "../components/cards/StatCard";
 import FeatureCard from "../components/cards/FeatureCard";
 import Testimonial from "../components/cards/Testimonial";
 import ContactForm from "../components/forms/ContactForm";
+import ProjectAccess from "../components/ui/ProjectAccess";
 
 export default function Home() {
   const handleScrollToContact = () => {
@@ -321,6 +322,9 @@ export default function Home() {
           <ContactForm />
         </div>
       </section>
+
+      {/* ⚙️ Premium Systems Deploy Console */}
+      <ProjectAccess />
 
       {/* Footer */}
       <footer className="py-12 border-t border-white/[0.04] bg-[#050505] relative z-10 text-center md:text-left">

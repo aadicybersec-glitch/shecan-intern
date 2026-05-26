@@ -20,12 +20,12 @@ export const loginUser = async (req, res) => {
     // 💡 Recruiter Demo Fallback check!
     // If the database is disconnected, we authorize the recruiter directly in-memory!
     if (!isDBConnected()) {
-      if (email === "admin@shecan.org" && password === "DemoAccess@2026") {
+      if ((email === "admin@shecan.org" || email === "demo@shecan.foundation") && password === "DemoAccess@2026") {
         const token = `demo_session_${Date.now()}`;
         return res.status(200).json({
           success: true,
           token,
-          user: { email: "admin@shecan.org", role: "SuperAdmin", mode: "Demo" }
+          user: { email, role: "SuperAdmin", mode: "Demo" }
         });
       } else {
         return res.status(401).json({ message: "Invalid credentials (offline fallback mode active)." });
@@ -74,23 +74,24 @@ export const getMe = async (req, res) => {
 };
 
 // 📡 Silent Database Seeder (Proactive Developer Detail!)
-// Automatically provisions a default admin account on startup if none exists in live database
+// Automatically provisions default admin accounts on startup if none exist in live database
 export const seedDefaultAdmin = async () => {
   if (!isDBConnected()) return;
   try {
-    const adminCount = await User.countDocuments({ email: "admin@shecan.org" });
-    if (adminCount === 0) {
-      // Provisions default admin
-      const defaultAdmin = new User({
-        email: "admin@shecan.org",
-        password: "DemoAccess@2026", // This will be automatically salted/hashed by User pre-save hook
-        role: "SuperAdmin"
-      });
-      await defaultAdmin.save();
-      console.log("🌱 Database Seeding: Admin provisioned successfully ('admin@shecan.org' / 'DemoAccess@2026')");
-    } else {
-      console.log("🌱 Database Seeding: Default admin record verified.");
+    const adminEmails = ["admin@shecan.org", "demo@shecan.foundation"];
+    for (const email of adminEmails) {
+      const adminCount = await User.countDocuments({ email });
+      if (adminCount === 0) {
+        const defaultAdmin = new User({
+          email,
+          password: "DemoAccess@2026", // Salted & Hashed dynamically by pre-save hooks
+          role: "SuperAdmin"
+        });
+        await defaultAdmin.save();
+        console.log(`🌱 Database Seeding: Admin provisioned successfully ('${email}' / 'DemoAccess@2026')`);
+      }
     }
+    console.log("🌱 Database Seeding: Default admin records verified.");
   } catch (error) {
     console.error("❌ Database Seeding Failed:", error.message);
   }

@@ -44,7 +44,7 @@ export default function Login() {
 
   // Elite Recruiter Autofill helper
   const handleAutofillDemo = () => {
-    setValue("email", "admin@shecan.org");
+    setValue("email", "demo@shecan.foundation");
     setValue("password", "DemoAccess@2026");
     setError(null); // Clear errors
   };
